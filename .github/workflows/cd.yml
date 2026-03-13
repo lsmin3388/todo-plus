@@ -13,7 +13,7 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       packages: write
 
     steps:
@@ -37,9 +37,32 @@ jobs:
             type=sha
 
       - name: Build and push Docker image
+        id: build
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Update release with package info
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          EXISTING=$(gh release view "$TAG" --json body --jq '.body')
+          PACKAGE_NOTE=$(cat <<'EOF'
+
+          ---
+
+          ### 📦 Docker Image
+          ```bash
+          docker pull ghcr.io/${{ github.repository }}:${TAG#v}
+          docker run -p 5000:5000 ghcr.io/${{ github.repository }}:${TAG#v}
+          ```
+
+          **Package**: [ghcr.io/${{ github.repository }}](https://github.com/${{ github.repository }}/pkgs/container/todo-plus)
+          EOF
+          )
+          gh release edit "$TAG" --notes "${EXISTING}${PACKAGE_NOTE}"
