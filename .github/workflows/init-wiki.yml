@@ -1,0 +1,22 @@
+name: Init Wiki
+on:
+  workflow_dispatch:
+jobs:
+  init-wiki:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Initialize wiki
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          mkdir wiki && cd wiki
+          git init
+          echo "init" > Home.md
+          git add .
+          git commit -m "init"
+          git remote add origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.wiki.git
+          git push -u origin master --force
