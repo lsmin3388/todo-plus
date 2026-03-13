@@ -91,3 +91,28 @@ def delete_todo(todo_id):
     conn.execute("DELETE FROM todos WHERE id = ?", (todo_id,))
     conn.commit()
     conn.close()
+
+
+def get_stats():
+    conn = get_db()
+    total = conn.execute("SELECT COUNT(*) FROM todos").fetchone()[0]
+    completed = conn.execute("SELECT COUNT(*) FROM todos WHERE completed = 1").fetchone()[0]
+    active = total - completed
+
+    categories = conn.execute(
+        "SELECT category, COUNT(*) as count FROM todos GROUP BY category"
+    ).fetchall()
+
+    priorities = conn.execute(
+        "SELECT priority, COUNT(*) as count FROM todos GROUP BY priority"
+    ).fetchall()
+
+    conn.close()
+    return {
+        'total': total,
+        'completed': completed,
+        'active': active,
+        'completion_rate': round(completed / total * 100) if total > 0 else 0,
+        'categories': {row['category']: row['count'] for row in categories},
+        'priorities': {row['priority']: row['count'] for row in priorities}
+    }
