@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block subtitle %}- {% if todo %}Edit{% else %}New{% endif %} Todo{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{% if todo %}Edit Todo{% else %}New Todo{% endif %}</h1>
+</div>
+
+<form method="POST" class="todo-form">
+    <div class="form-group">
+        <label for="title">Title *</label>
+        <input type="text" id="title" name="title" required
+               value="{{ todo.title if todo else '' }}" placeholder="What needs to be done?">
+    </div>
+
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" rows="3"
+                  placeholder="Add some details...">{{ todo.description if todo else '' }}</textarea>
+    </div>
+
+    <div class="form-row">
+        <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" name="category">
+                {% for cat in categories %}
+                    <option value="{{ cat }}" {% if todo and todo.category == cat %}selected{% endif %}>
+                        {{ cat|capitalize }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="priority">Priority</label>
+            <select id="priority" name="priority">
+                {% for pri in priorities %}
+                    <option value="{{ pri }}" {% if todo and todo.priority == pri %}selected{% endif %}>
+                        {{ pri|capitalize }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="due_date">Due Date</label>
+            <input type="date" id="due_date" name="due_date"
+                   value="{{ todo.due_date if todo and todo.due_date else '' }}">
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">
+            {% if todo %}Update{% else %}Add{% endif %} Todo
+        </button>
+        <a href="{{ url_for('index') }}" class="btn">Cancel</a>
+    </div>
+</form>
+{% endblock %}
