@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block subtitle %}- My Todos{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>My Todos</h1>
+    <a href="{{ url_for('add') }}" class="btn btn-primary">+ New Todo</a>
+</div>
+
+<div class="filters">
+    <form method="GET" action="{{ url_for('index') }}">
+        <select name="category" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            {% for cat in categories %}
+                <option value="{{ cat }}" {% if current_category == cat %}selected{% endif %}>
+                    {{ cat|capitalize }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <select name="priority" onchange="this.form.submit()">
+            <option value="">All Priorities</option>
+            {% for pri in priorities %}
+                <option value="{{ pri }}" {% if current_priority == pri %}selected{% endif %}>
+                    {{ pri|capitalize }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <select name="status" onchange="this.form.submit()">
+            <option value="">All Status</option>
+            <option value="active" {% if current_status == 'active' %}selected{% endif %}>Active</option>
+            <option value="completed" {% if current_status == 'completed' %}selected{% endif %}>Completed</option>
+        </select>
+
+        {% if current_category or current_priority or current_status %}
+            <a href="{{ url_for('index') }}" class="btn btn-small">Clear Filters</a>
+        {% endif %}
+    </form>
+</div>
+
+{% if todos %}
+<div class="todo-list">
+    {% for todo in todos %}
+    <div class="todo-item {% if todo.completed %}completed{% endif %} priority-{{ todo.priority }}">
+        <div class="todo-left">
+            <a href="{{ url_for('toggle', todo_id=todo.id) }}" class="checkbox">
+                {% if todo.completed %}&#9745;{% else %}&#9744;{% endif %}
+            </a>
+            <div class="todo-info">
+                <h3>{{ todo.title }}</h3>
+                {% if todo.description %}
+                    <p class="description">{{ todo.description }}</p>
+                {% endif %}
+                <div class="todo-meta">
+                    <span class="badge category">{{ todo.category }}</span>
+                    <span class="badge priority-{{ todo.priority }}">{{ todo.priority }}</span>
+                    {% if todo.due_date %}
+                        <span class="due-date">Due: {{ todo.due_date }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="todo-actions">
+            <a href="{{ url_for('edit', todo_id=todo.id) }}" class="btn btn-small">Edit</a>
+            <a href="{{ url_for('delete', todo_id=todo.id) }}" class="btn btn-small btn-danger"
+               onclick="return confirm('Delete this todo?')">Delete</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <p>No todos found. <a href="{{ url_for('add') }}">Create one!</a></p>
+</div>
+{% endif %}
+{% endblock %}
