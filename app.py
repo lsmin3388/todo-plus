@@ -80,6 +80,12 @@ def delete(todo_id):
     return redirect(url_for('index'))
 
 
+@app.route('/stats')
+def stats():
+    data = get_stats()
+    return render_template('stats.html', stats=data)
+
+
 if __name__ == '__main__':
     init_db()
     app.run(debug=True)
