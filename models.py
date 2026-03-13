@@ -27,3 +27,67 @@ def init_db():
     ''')
     conn.commit()
     conn.close()
+
+
+def get_all_todos(category=None, priority=None, status=None):
+    conn = get_db()
+    query = "SELECT * FROM todos WHERE 1=1"
+    params = []
+
+    if category:
+        query += " AND category = ?"
+        params.append(category)
+    if priority:
+        query += " AND priority = ?"
+        params.append(priority)
+    if status == 'completed':
+        query += " AND completed = 1"
+    elif status == 'active':
+        query += " AND completed = 0"
+
+    query += " ORDER BY completed ASC, CASE priority WHEN 'high' THEN 1 WHEN 'medium' THEN 2 WHEN 'low' THEN 3 END, created_at DESC"
+
+    todos = conn.execute(query, params).fetchall()
+    conn.close()
+    return todos
+
+
+def get_todo(todo_id):
+    conn = get_db()
+    todo = conn.execute("SELECT * FROM todos WHERE id = ?", (todo_id,)).fetchone()
+    conn.close()
+    return todo
+
+
+def create_todo(title, description, category, priority, due_date):
+    conn = get_db()
+    conn.execute(
+        "INSERT INTO todos (title, description, category, priority, due_date) VALUES (?, ?, ?, ?, ?)",
+        (title, description, category, priority, due_date or None)
+    )
+    conn.commit()
+    conn.close()
+
+
+def update_todo(todo_id, title, description, category, priority, due_date):
+    conn = get_db()
+    conn.execute(
+        "UPDATE todos SET title=?, description=?, category=?, priority=?, due_date=? WHERE id=?",
+        (title, description, category, priority, due_date or None, todo_id)
+    )
+    conn.commit()
+    conn.close()
+
+
+def toggle_todo(todo_id):
+    conn = get_db()
+    conn.execute("UPDATE todos SET completed = NOT completed WHERE id = ?", (todo_id,))
+    conn.commit()
+    conn.close()
+
+
+def delete_todo(todo_id):
+    conn = get_db()
+    conn.execute("DELETE FROM todos WHERE id = ?", (todo_id,))
+    conn.commit()
+    conn.close()
