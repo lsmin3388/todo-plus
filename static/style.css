@@ -320,3 +320,161 @@ nav {
     gap: 10px;
     margin-top: 8px;
 }
+
+/* Stats */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+}
+
+.stat-card h3 {
+    font-size: 0.85rem;
+    color: #999;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.charts-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.chart-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.chart-card h2 {
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+    color: #2c3e50;
+}
+
+.progress-bar {
+    height: 24px;
+    background: #ecf0f1;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #27ae60, #2ecc71);
+    border-radius: 12px;
+    transition: width 0.5s;
+    min-width: 2%;
+}
+
+.chart-label {
+    font-size: 0.85rem;
+    color: #999;
+}
+
+.bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.bar-label {
+    width: 80px;
+    font-size: 0.85rem;
+    text-align: right;
+}
+
+.bar-container {
+    flex: 1;
+    height: 20px;
+    background: #ecf0f1;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    background: #3498db;
+    border-radius: 10px;
+    min-width: 4%;
+}
+
+.bar-fill.priority-bar-high {
+    background: #e74c3c;
+}
+
+.bar-fill.priority-bar-medium {
+    background: #f39c12;
+}
+
+.bar-fill.priority-bar-low {
+    background: #27ae60;
+}
+
+.bar-value {
+    width: 30px;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.empty-text {
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.priority-text-high {
+    color: #e74c3c;
+}
+
+.priority-text-medium {
+    color: #f39c12;
+}
+
+.priority-text-low {
+    color: #27ae60;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+    font-size: 0.85rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .todo-item {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .todo-actions {
+        margin-left: 0;
+    }
+}
