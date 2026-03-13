@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block subtitle %}- Statistics{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Statistics</h1>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>Total</h3>
+        <span class="stat-number">{{ stats.total }}</span>
+    </div>
+    <div class="stat-card">
+        <h3>Active</h3>
+        <span class="stat-number">{{ stats.active }}</span>
+    </div>
+    <div class="stat-card">
+        <h3>Completed</h3>
+        <span class="stat-number">{{ stats.completed }}</span>
+    </div>
+    <div class="stat-card">
+        <h3>Completion Rate</h3>
+        <span class="stat-number">{{ stats.completion_rate }}%</span>
+    </div>
+</div>
+
+<div class="charts-grid">
+    <div class="chart-card">
+        <h2>Completion</h2>
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: {{ stats.completion_rate }}%"></div>
+        </div>
+        <p class="chart-label">{{ stats.completed }} of {{ stats.total }} completed</p>
+    </div>
+
+    <div class="chart-card">
+        <h2>By Category</h2>
+        {% if stats.categories %}
+            {% for cat, count in stats.categories.items() %}
+            <div class="bar-row">
+                <span class="bar-label">{{ cat|capitalize }}</span>
+                <div class="bar-container">
+                    <div class="bar-fill" style="width: {{ (count / stats.total * 100)|round }}%"></div>
+                </div>
+                <span class="bar-value">{{ count }}</span>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty-text">No data yet</p>
+        {% endif %}
+    </div>
+
+    <div class="chart-card">
+        <h2>By Priority</h2>
+        {% if stats.priorities %}
+            {% for pri, count in stats.priorities.items() %}
+            <div class="bar-row">
+                <span class="bar-label priority-text-{{ pri }}">{{ pri|capitalize }}</span>
+                <div class="bar-container">
+                    <div class="bar-fill priority-bar-{{ pri }}" style="width: {{ (count / stats.total * 100)|round }}%"></div>
+                </div>
+                <span class="bar-value">{{ count }}</span>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty-text">No data yet</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
